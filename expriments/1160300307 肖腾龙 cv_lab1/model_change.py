@@ -7,6 +7,7 @@ Created on 2018/12/1
 import math
 import struct
 import numpy as np
+import sys
 
 def read_file(filename):  #读取bmp文件的像素值内容，存储在info列表中返回
     info = []
@@ -124,17 +125,35 @@ def minimum(a,b,c):  #返回a,b,c中的最小值
     else:
         return c
 
-if __name__ == "__main__":
-    print("请输入你要转换的图片路径")
-    string = input()
-    info = read_file(string)
-    string = string[0:-4]
+def get_info(filename):
+    info = read_file(filename)
+    result = []
+    string = filename[0:-4]
     pixel = []
     header = info[0]
     for i in range(len(info)):
         if i != 0:
             pixel.append(info[i])
-    change_to_yiq("test",header,pixel)
-    #change_to_hsi("test", header, pixel)
-    #change_to_ycbcr("test", header, pixel)
-    #change_to_xyz("test", header, pixel)
+    result.append(string)
+    result.append(header)
+    result.append(pixel)
+    return result
+
+def main():
+    filename = sys.argv[1]
+    model = sys.argv[2]
+    result = get_info(filename)
+    if model == "YIQ" or model == "yiq":
+        change_to_yiq(result[0],result[1],result[2])
+    elif model == "HSI" or model =="hsi":
+        change_to_hsi(result[0],result[1],result[2])
+    elif model == "YCbCr" or model =="ycbcr":
+        change_to_ycbcr(result[0],result[1],result[2])
+    elif model == "XYZ" or model =="xyz":
+        change_to_xyz(result[0],result[1],result[2])
+    else:
+        print("不支持转换成"+model+"这种格式")
+
+
+if __name__ == "__main__":
+    main()
